@@ -195,12 +195,25 @@ class AgentPanel(QWidget):
         worker.start()
         return worker
 
+    def is_running(self) -> bool:
+        """Whether this panel currently has a request in flight."""
+        return self.worker is not None and self.worker.isRunning()
+
     def stop_worker(self) -> bool:
         """Cancel the in-flight request, if there is one. True if it was running."""
-        if self.worker is not None and self.worker.isRunning():
+        if self.is_running():
             self.worker.cancel()
             return True
         return False
+
+    def stop(self) -> None:
+        """Stop this panel's work and put its controls back.
+
+        The base only cancels; a panel that has a status label and buttons to
+        restore overrides this. `stop_current_task` — the window's Stop button —
+        calls it on whichever panel reports itself running.
+        """
+        self.stop_worker()
 
     # ── Shared services ─────────────────────────────────────────────────
     def agent(self):

@@ -36,6 +36,11 @@ class AgentHost(Protocol):
     # ── Agent instances ─────────────────────────────────────────────────
     agent_instances: dict[str, Any]
 
+    # Writes a new agent's module and registry entries. A panel asks for it
+    # rather than owning it: it edits `agents/` and `config/` for the whole
+    # application (Forge's Approve button is the only caller today).
+    agent_factory: Any
+
     def run_backend(self, backend: str, model: str, messages: list,
                     prompt: str) -> Any:
         """Execute one request. Panels hand this to a ChatWorker."""
